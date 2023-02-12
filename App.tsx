@@ -1,11 +1,22 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
 import WebView from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function App() {
   const [isUriInputVisibile, setIsUriInputVisibile] = useState(false);
   const [uri, setUri] = useState('https://google.com/');
+  const [uriToRender, setUriToRender] = useState(uri);
+  const [isWebViewReady, setIsWebViewReady] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -16,21 +27,35 @@ export default function App() {
         }}
       />
       <WebView
-        source={{ uri: uri }}
+        source={{ uri: uriToRender }}
         onMessage={(event) => {
           alert(event.nativeEvent.data);
         }}
         style={{ height: '100%' }}
+        onLoadEnd={() => {
+          setIsWebViewReady(true);
+        }}
+        onLoadStart={() => {
+          setIsWebViewReady(false);
+        }}
       />
-      {isUriInputVisibile && (
-        <View
+      {!isWebViewReady && (
+        <ActivityIndicator
           style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>Hello World</Text>
-        </View>
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            flexWrap: 'wrap',
+            alignContent: 'center',
+            width: '100%',
+            height: '100%',
+          }}
+          size="large"
+        />
       )}
+
       <View
         style={{
           backgroundColor: '#3f3f46',
@@ -39,6 +64,62 @@ export default function App() {
           paddingVertical: 5,
           paddingHorizontal: 20,
         }}>
+        {isUriInputVisibile && (
+          <View
+            style={{
+              paddingBottom: 10,
+              borderColor: 'white',
+              borderWidth: 1,
+              borderRadius: 10,
+              paddingHorizontal: 5,
+              paddingVertical: 3,
+              flex: 0,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <Ionicons
+                name="globe-outline"
+                size={24}
+                color="white"
+                style={{
+                  marginTop: 3,
+                }}
+              />
+              <TextInput
+                inputMode='url'
+                keyboardType='url'
+                onChangeText={(text) => {
+                  setUri(text);
+                }}
+                style={{
+                  paddingLeft: 10,
+                  paddingRight: 100,
+                }}>
+                <Text style={{ color: 'white' }}>{uri}</Text>
+              </TextInput>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setUriToRender(uri);
+                setIsUriInputVisibile((prev) => !prev);
+              }}>
+              <Ionicons
+                name="checkmark-outline"
+                size={24}
+                color="white"
+                style={{
+                  marginTop: 3,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
         <TouchableOpacity
           onPress={() => {
             setIsUriInputVisibile((prev) => !prev);
