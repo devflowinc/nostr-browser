@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,10 +11,12 @@ import {
 import WebView from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { PrivateKeyInput } from './src/PrivateKeyInput';
 
 export default function App() {
   const [isUriInputVisibile, setIsUriInputVisibile] = useState(false);
-  const [uri, setUri] = useState('https://google.com/');
+  const [isPrivateKeyInputVisibile, setIsPrivateKeyInputVisibile] = useState(false);
+  const [uri, setUri] = useState('https://startpage.com/');
   const [uriToRender, setUriToRender] = useState(uri);
   const [isWebViewReady, setIsWebViewReady] = useState(false);
 
@@ -92,8 +94,8 @@ export default function App() {
                 }}
               />
               <TextInput
-                inputMode='url'
-                keyboardType='url'
+                inputMode="url"
+                keyboardType="url"
                 onChangeText={(text) => {
                   setUri(text);
                 }}
@@ -120,24 +122,51 @@ export default function App() {
             </TouchableOpacity>
           </View>
         )}
-        <TouchableOpacity
-          onPress={() => {
-            setIsUriInputVisibile((prev) => !prev);
+        {isPrivateKeyInputVisibile && (
+          <PrivateKeyInput onPrivateKeySave={() => {}} onPrivateKeySaveError={() => {}} />
+        )}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
           }}>
-          <View
-            style={{
-              borderColor: 'white',
-              borderWidth: 1,
-              borderRadius: 10,
-              padding: 5,
-              width: 48,
-              height: 48,
-              alignItems: 'center',
-              justifyContent: 'center',
+          <TouchableOpacity
+            onPress={() => {
+              setIsUriInputVisibile((prev) => !prev);
             }}>
-            <MaterialCommunityIcons name="magnify" color="white" size={32} />
-          </View>
-        </TouchableOpacity>
+            <View
+              style={{
+                borderColor: 'white',
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 5,
+                width: 48,
+                height: 48,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <MaterialCommunityIcons name="magnify" color="white" size={32} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setIsPrivateKeyInputVisibile((prev) => !prev);
+            }}>
+            <View
+              style={{
+                borderColor: 'white',
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 5,
+                width: 48,
+                height: 48,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <MaterialCommunityIcons name="eye-outline" color="white" size={32} />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
