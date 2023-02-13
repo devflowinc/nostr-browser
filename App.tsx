@@ -11,9 +11,12 @@ import {
 import WebView from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-import { PrivateKeyInput } from './src/PrivateKeyInput';
+import { PrivateKeyInput } from './src/components/PrivateKeyInput';
+import { GestureDetector } from 'react-native-gesture-detector';
+import useInitApp from './src/hooks/useInitApp';
 
 export default function App() {
+  const isAppInitialized = useInitApp();
   const [isUriInputVisibile, setIsUriInputVisibile] = useState(false);
   const [isPrivateKeyInputVisibile, setIsPrivateKeyInputVisibile] = useState(false);
   const [uri, setUri] = useState('https://startpage.com/');
