@@ -12,7 +12,6 @@ import WebView from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { PrivateKeyInput } from './src/components/PrivateKeyInput';
-import { GestureDetector } from 'react-native-gesture-detector';
 import useInitApp from './src/hooks/useInitApp';
 
 export default function App() {
@@ -22,6 +21,26 @@ export default function App() {
   const [uri, setUri] = useState('https://startpage.com/');
   const [uriToRender, setUriToRender] = useState(uri);
   const [isWebViewReady, setIsWebViewReady] = useState(false);
+
+  if (!isAppInitialized)
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            flexWrap: 'wrap',
+            alignContent: 'center',
+            width: '100%',
+            height: '100%',
+          }}
+          size="large"
+        />
+      </View>
+    );
 
   return (
     <View style={styles.container}>

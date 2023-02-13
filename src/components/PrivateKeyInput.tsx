@@ -8,52 +8,40 @@ import { Entypo } from '@expo/vector-icons';
 
 const BigInt = require('big-integer');
 
-const useNostrToolsFunctions = () => {
-  useEffect(() => {
-    if (!global.BigInt) global.BigInt = BigInt;
-  }, []);
-
-  const isKeyValid = (privateKey: string) => {
-    if (privateKey === '') return true;
-    if (privateKey.match(/^[a-f0-9]{64}$/)) return true;
-    try {
-      // if (nip19.decode(privateKey).type === 'nsec') return true;
-      return true;
-    } catch (_) {}
-    return false;
-  };
-
-  const storePrivateKey = async (privateKey: string) => {
-    try {
-      await AsyncStorage.setItem('private_key', privateKey);
-    } catch (e) {
-      return false;
-    }
-
+const isKeyValid = (privateKey: string) => {
+  if (privateKey === '') return true;
+  if (privateKey.match(/^[a-f0-9]{64}$/)) return true;
+  try {
+    if (nip19.decode(privateKey).type === 'nsec') return true;
     return true;
-  };
+  } catch (_) {}
+  return false;
+};
 
-  // return true if saved and false otherwise
-  const savePrivateKey = async (privateKey: string) => {
-    if (!isKeyValid(privateKey)) return;
+const storePrivateKey = async (privateKey: string) => {
+  try {
+    await AsyncStorage.setItem('private_key', privateKey);
+  } catch (e) {
+    return false;
+  }
 
-    let hexOrEmptyKey = privateKey;
+  return true;
+};
 
-    try {
-      // let { type, data } = nip19.decode(privateKey);
-      // if (type === 'nsec' && typeof data === 'string') hexOrEmptyKey = data;
-    } catch (_) {
-      return false;
-    }
+// return true if saved and false otherwise
+const savePrivateKey = async (privateKey: string) => {
+  if (!isKeyValid(privateKey)) return;
 
-    return await storePrivateKey(hexOrEmptyKey);
-  };
+  let hexOrEmptyKey = privateKey;
 
-  return {
-    isKeyValid,
-    storePrivateKey,
-    savePrivateKey,
-  };
+  try {
+    let { type, data } = nip19.decode(privateKey);
+    if (type === 'nsec' && typeof data === 'string') hexOrEmptyKey = data;
+  } catch (_) {
+    return false;
+  }
+
+  return await storePrivateKey(hexOrEmptyKey);
 };
 
 export interface PrivateKeyInputProps {
@@ -67,7 +55,6 @@ export const PrivateKeyInput = ({
 }: PrivateKeyInputProps) => {
   const [privateKey, setPrivateKey] = useState('');
   const [loading, setLoading] = useState(true);
-  const { isKeyValid, storePrivateKey, savePrivateKey } = useNostrToolsFunctions();
 
   useEffect(() => {
     AsyncStorage.getItem('private_key').then((key) => {
